@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criminal Face Recognition</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #333; /* Default gray background */
+            {% if results %}
+                background-image: url('{{ url_for("static", filename=results[0].details.age ~ ".jpg") }}');
+            {% endif %}
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .card-custom {
+            background-color: rgba(30, 30, 30, 0.8); /* Semi-transparent card background */
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(255, 0, 0, 0.3); /* Red Glow */
+            transition: transform 0.2s;
+        }
+
+        .card-custom:hover {
+            transform: scale(1.03);
+            box-shadow: 0px 6px 18px rgba(255, 0, 0, 0.5); /* Stronger Red Glow */
+        }
+
+        .btn-danger {
+            background-color: #D32F2F; /* Red */
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #B71C1C; /* Darker Red */
+        }
+
+        .header-text {
+            color: #E53935; /* Bright Red */
+            font-weight: bold;
+        }
+
+        .first-spotted {
+            color: white;
+        }
+
+        /* Glow and Blink Effect */
+        @keyframes glow-blink {
+            0% {
+                border-color: #D32F2F;
+                box-shadow: 0 0 10px #D32F2F;
+            }
+            50% {
+                border-color: #B71C1C;
+                box-shadow: 0 0 20px #B71C1C;
+            }
+            100% {
+                border-color: #D32F2F;
+                box-shadow: 0 0 10px #D32F2F;
+            }
+        }
+
+        .glow-border {
+            animation: glow-blink 1s ease-in-out 10; /* Glowing and blinking for 4 seconds */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container text-center mt-5">
+        <h1 class="header-text">Criminal Face Recognition</h1>
+
+        <!-- Upload Form -->
+        <div class="card p-4 shadow-sm mx-auto mt-4 card-custom" style="max-width: 500px;">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Upload Video:</label>
+                    <input type="file" name="file" accept="video/*" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Upload Video</button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        {% if results %}
+        <h2 class="mt-5 header-text">Results</h2>
+        <div class="d-flex flex-column align-items-center mt-3">
+            {% for result in results %}
+            <div class="card text-center p-3 mt-3 card-custom" style="width: 400px;">
+                <img src="{{ url_for('static', filename=result.frame_path) }}" class="card-img-top rounded" alt="Detected Frame">
+                <div class="card-body">
+                    <h5 class="card-title">{{ result.details.name }}</h5>
+                    <p class="card-text"><strong>Crime:</strong> {{ result.details.crime }}</p>
+                    <p class="card-text"><strong>Age:</strong> {{ result.details.age }}</p>
+                    <p class="first-spotted"><strong>First Spotted At:</strong> {{ result.timestamp }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="sound-effect" src="{{ url_for('static', filename='sound.mp3') }}" preload="auto"></audio>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript to Play Sound and Apply Glowing Effect -->
+    <script>
+        // Check if results are present and trigger sound and glow effect
+        {% if results %}
+        window.onload = function() {
+            var sound = document.getElementById('sound-effect');
+            var body = document.querySelector('body');
+            
+            // Play sound for 5 seconds
+            sound.play();
+            setTimeout(function() {
+                sound.pause();
+                sound.currentTime = 0;  // Reset to the beginning
+            }, 5000);
+
+            // Apply the glowing border effect for 4 seconds
+            body.classList.add('glow-border');
+            
+            // Remove the glow effect after 4 seconds
+            setTimeout(function() {
+                body.classList.remove('glow-border');
+            }, 4000);
+        }
+        {% endif %}
+    </script>
+
+</body>
+</html>
