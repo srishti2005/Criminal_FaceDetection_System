@@ -1,4 +1,4 @@
-Facial Recognition for Criminal Detection
+##Facial Recognition for Criminal Detection
 
 📌 Project Overview
 
