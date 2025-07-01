@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b169ae2d5e4b66891e903b80f38200174e9d0388
 from flask import Flask, render_template, request, redirect, url_for
 import cv2
 import face_recognition
@@ -150,4 +155,10 @@ def process_video(video_path):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run(debug=True)
+=======
+    app.run(debug=True)
+ 
+
+>>>>>>> b169ae2d5e4b66891e903b80f38200174e9d0388
